@@ -1,0 +1,11 @@
+services:
+  api:
+    build:
+      context: ./ml-service/
+    container_name: ml-service
+    ports:
+      - 5000:5000
+    restart: always
+    env_file:
+      - ml-service/.env
+    
