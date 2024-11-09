@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Отладчик Python: Текущий файл",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "ml-service",
             "type": "debugpy",
             "request": "launch",
@@ -16,7 +23,7 @@
                 "--port=5000"
             ],
             "jinja": true,
-            "cwd": "${workspaceFolder}/ml-service", 
+            "cwd": "${workspaceFolder}/ml-service",
             "envFile": "${workspaceFolder}/.env"
         }
     ]
