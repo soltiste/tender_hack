@@ -37,7 +37,7 @@ def get_relevant_context(rewritten_input, vault_embeddings, vault_content, top_k
     if vault_embeddings.nelement() == 0:  # Check if the tensor has any elements
         return []
     # Encode the rewritten input
-    input_embedding = ollama.embeddings(model='nomic-embed-text', prompt=rewritten_input)["embedding"]
+    input_embedding = ollama.embeddings(model='mxbai-embed-large', prompt=rewritten_input)["embedding"]
     # Compute cosine similarity between the input and vault embeddings
     cos_scores = torch.cosine_similarity(torch.tensor(input_embedding).unsqueeze(0), vault_embeddings)
     # Adjust top_k if it's greater than the number of available scores
@@ -78,6 +78,7 @@ def rewrite_query(user_input_json, conversation_history, ollama_model):
     rewritten_query = response.choices[0].message.content.strip()
     return json.dumps({"Rewritten Query": rewritten_query})
    
+@time_decorator
 def ollama_chat(user_input, system_message, vault_embeddings, vault_content, ollama_model, conversation_history):
     conversation_history.append({"role": "user", "content": user_input})
     
@@ -132,7 +133,7 @@ def clean_string(input_string):
 
 @time_decorator
 def embedding(clean_string):
-    return ollama.embeddings(model='nomic-embed-text', prompt=clean_string)
+    return ollama.embeddings(model='mxbai-embed-large', prompt=clean_string)
 
 # Parse command-line arguments
 print(NEON_GREEN + "Parsing command-line arguments..." + RESET_COLOR)
@@ -170,7 +171,7 @@ print(vault_embeddings_tensor)
 # Conversation loop
 print("Starting conversation loop...")
 conversation_history = []
-system_message = "You are a helpful assistant that is an expert at extracting the most useful information from a given text. Give a short answer first in the first line, and then expanded below"
+system_message = "You are a helpful assistant that is an expert at extracting the most useful information from a given text. imagine that you are a moderator on the site and are looking for answers to questions in the documents. Give a short answer first in the first line, and then expanded below"
 
 while True:
     user_input = input(YELLOW + "Ask a query about your documents (or type 'quit' to exit): " + RESET_COLOR)
