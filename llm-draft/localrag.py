@@ -115,7 +115,7 @@ def ollama_chat(user_input, system_message, vault_embeddings, vault_content, oll
     response = client.chat.completions.create(
         model=ollama_model,
         messages=messages,
-        max_tokens=2000,
+        max_tokens=150000,
     )
     
     conversation_history.append({"role": "assistant", "content": response.choices[0].message.content})
@@ -152,7 +152,7 @@ print(NEON_GREEN + "Loading vault content..." + RESET_COLOR)
 vault_content = []
 if os.path.exists("vault.txt"):
     with open("vault.txt", "r", encoding='utf-8') as vault_file:
-        vault_content = [vault_file.read()]
+        vault_content = vault_file.readlines()
 
 # Generate embeddings for the vault content using Ollama
 print(NEON_GREEN + "Generating embeddings for the vault content..." + RESET_COLOR)
@@ -170,7 +170,7 @@ print(vault_embeddings_tensor)
 # Conversation loop
 print("Starting conversation loop...")
 conversation_history = []
-system_message = "You are a helpful assistant that is an expert at extracting the most useful information from a given text. Also bring in extra relevant infromation to the user query from outside the given context."
+system_message = "You are a helpful assistant that is an expert at extracting the most useful information from a given text. Give a short answer first in the first line, and then expanded below"
 
 while True:
     user_input = input(YELLOW + "Ask a query about your documents (or type 'quit' to exit): " + RESET_COLOR)
